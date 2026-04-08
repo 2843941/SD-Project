@@ -10,14 +10,52 @@
 
     <nav class="navbar">
         <div class="logo">SA Learnerships Portal</div>
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search opportunities...">
+        </div>
         <ul class="nav-links">
-            <li><button class="nav-btn active" id="opportunitiesBtn">📋 My Opportunities</button></li>
+            <li><button class="nav-btn active" id="opportunitiesBtn">📋 My Posts</button></li>
             <li><button class="nav-btn" id="applicationsBtn">📝 Applications</button></li>
             <li><button class="nav-btn" id="notificationsBtn">🔔 Notifications</button></li>
         </ul>
-        <div class="user-badge">
-            <span>Welcome, Provider Co.</span>
-            <button class="logout-btn" id="logoutBtn">Logout</button>
+        <div class="user-dropdown">
+            <div class="dropdown-trigger" id="dropdownTrigger">
+                <div class="avatar">PC</div>
+                <span class="user-name">Provider Co.</span>
+                <span class="dropdown-arrow">▼</span>
+            </div>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <div class="dropdown-header">
+                    <div class="avatar-large">PC</div>
+                    <div class="dropdown-header-info">
+                        <div class="dropdown-name">Provider Co.</div>
+                        <div class="dropdown-email">provider@company.co.za</div>
+                    </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item" id="profileBtn">
+                    <span class="dropdown-icon">👤</span>
+                    <span>My Profile</span>
+                </a>
+                <a href="#" class="dropdown-item" id="settingsBtn">
+                    <span class="dropdown-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="dropdown-item" id="privacyBtn">
+                    <span class="dropdown-icon">🔒</span>
+                    <span>Privacy</span>
+                </a>
+                <a href="#" class="dropdown-item" id="helpBtn">
+                    <span class="dropdown-icon">❓</span>
+                    <span>Help & Support</span>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item" id="logoutBtn">
+                    <span class="dropdown-icon">🚪</span>
+                    <span>Logout</span>
+                </a>
+            </div>
         </div>
     </nav>
 
@@ -30,7 +68,7 @@
         <!-- MY OPPORTUNITIES SECTION -->
         <div id="opportunitiesSection">
             <div class="section-header">
-                <h2>📋 My Opportunities</h2>
+                <h2>📋 My Posts</h2>
                 <button class="btn-primary" id="postJobBtn">+ Post New Opportunity</button>
             </div>
             <div id="opportunitiesList" class="opportunities-grid">
@@ -65,14 +103,14 @@
         </div>
     </div>
 
-    <!-- POST JOB FORM MODAL (popup) -->
+    <!-- POST JOB FORM MODAL -->
     <div id="postJobModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Post New Opportunity</h2>
                 <span class="close-modal" id="closeModalBtn">&times;</span>
             </div>
-                        <form id="postJobForm">
+            <form id="postJobForm">
                 <div class="form-group">
                     <label>Job Title *</label>
                     <input type="text" id="jobTitle" required>
