@@ -1,343 +1,411 @@
-// Wait for page to load first
-document.addEventListener('DOMContentLoaded', function() {
+// ========== DATA STORAGE (no saving - resets on refresh) ==========
+let jobs = [];
+let applications = [];
+let notifications = [];
 
-    // ========== MOCK DATA WITH REQUIREMENTS ==========
-    const recruiterOpportunities = [
-        { 
-            id: 1, 
-            title: "Software Development Learnership", 
-            postedDate: "2026-04-01", 
-            applicants: 12, 
-            status: "Active",
-            requirements: [
-                "Matric certificate with Maths",
-                "No prior degree required",
-                "Basic computer literacy",
-                "Age 18-34 years old",
-                "South African ID"
-            ],
-            stipend: "R4,500 per month",
-            duration: "12 months",
-            location: "Johannesburg (Hybrid)"
-        },
-        { 
-            id: 2, 
-            title: "Data Analytics Internship", 
-            postedDate: "2026-03-28", 
-            applicants: 8, 
-            status: "Active",
-            requirements: [
-                "Degree or diploma in IT/Statistics",
-                "Excel proficiency",
-                "SQL knowledge is a plus",
-                "South African ID"
-            ],
-            stipend: "R6,000 per month",
-            duration: "6 months",
-            location: "Cape Town (Remote)"
-        },
-        { 
-            id: 3, 
-            title: "Cybersecurity Apprenticeship", 
-            postedDate: "2026-03-25", 
-            applicants: 24, 
-            status: "Closing Soon",
-            requirements: [
-                "IT degree or relevant certification",
-                "Network fundamentals knowledge",
-                "Problem-solving skills",
-                "South African ID"
-            ],
-            stipend: "R5,500 per month",
-            duration: "18 months",
-            location: "Durban (On-site)"
-        }
-    ];
+// Sample notification to show something
+notifications = [
+    { id: 1, title: "Welcome!", message: "Post your first opportunity using the button above", time: "Just now", read: false }
+];
 
-    const allApplications = [
-        { id: 101, applicantName: "Thabo Nkosi", opportunityTitle: "Software Development Learnership", appliedDate: "2026-04-05", status: "pending", qualifications: "Matric with Maths - 78%" },
-        { id: 102, applicantName: "Lerato Molefe", opportunityTitle: "Software Development Learnership", appliedDate: "2026-04-04", status: "pending", qualifications: "Matric with Maths - 65%" },
-        { id: 103, applicantName: "Sipho Dlamini", opportunityTitle: "Data Analytics Internship", appliedDate: "2026-04-03", status: "reviewed", qualifications: "IT Diploma - Completed 2025" },
-        { id: 104, applicantName: "Nomusa Khumalo", opportunityTitle: "Cybersecurity Apprenticeship", appliedDate: "2026-04-02", status: "pending", qualifications: "Computer Science Degree - 3rd year" }
-    ];
-
-    let notifications = [
-        { id: 1, title: "New Application", message: "Thabo Nkosi applied for Software Development Learnership", time: "2 hours ago", read: false },
-        { id: 2, title: "New Application", message: "Lerato Molefe applied for Software Development Learnership", time: "1 day ago", read: false },
-        { id: 3, title: "Application Reviewed", message: "You reviewed Sipho Dlamini's application", time: "2 days ago", read: true },
-        { id: 4, title: "Opportunity Closing Soon", message: "Cybersecurity Apprenticeship closes in 3 days", time: "3 days ago", read: true }
-    ];
-
-    let currentFilter = "all";
-
-    // ========== FUNCTION TO SHOW OPPORTUNITIES ==========
-    function renderOpportunities() {
-        const grid = document.getElementById('opportunitiesGrid');
-        if (!grid) return;
-        
-        let html = '';
-        for (let i = 0; i < recruiterOpportunities.length; i++) {
-            const opp = recruiterOpportunities[i];
-            html += `
-                <div class="opportunity-card" onclick="showJobDetails(${opp.id})">
-                    <h3>${opp.title}</h3>
-                    <div class="opportunity-meta">
-                        Posted: ${opp.postedDate}
-                        <span class="status-badge status-active">${opp.status}</span>
-                    </div>
-                    <div class="applicant-count">👥 ${opp.applicants} applicants</div>
-                    <div class="location-info">📍 ${opp.location}</div>
-                    <div class="stipend-info">💰 ${opp.stipend}</div>
-                </div>
-            `;
-        }
-        grid.innerHTML = html;
+// ========== RENDER FUNCTIONS ==========
+function renderOpportunities() {
+    const container = document.getElementById('opportunitiesList');
+    if (!container) return;
+    
+    if (jobs.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <p>📌 You haven't posted any opportunities yet.</p>
+                <p>Click "Post New Opportunity" to create your first learnership or internship.</p>
+            </div>
+        `;
+        return;
     }
+    
+    let html = '';
+    for (let i = 0; i < jobs.length; i++) {
+        const job = jobs[i];
+        html += `
+            <div class="opportunity-card">
+                <div class="card-header">
+                    <h3>${escapeHtml(job.title)}</h3>
+                    <button class="delete-job-btn" onclick="deleteJob(${job.id})">🗑️ Delete</button>
+                </div>
+                <div class="opportunity-meta">
+                    <span class="status-badge">Active</span>
+                    <span class="applicant-count">👥 ${getApplicantCount(job.id)} applicants</span>
+                </div>
+                <div class="location-info">📍 ${escapeHtml(job.location)}</div>
+                <div class="stipend-info">💰 ${escapeHtml(job.stipend)}</div>
+                <div class="closing-date">📅 Closing: ${job.closingDate}</div>
+                <button class="view-details-btn" onclick="viewJobDetails(${job.id})">View Details</button>
+            </div>
+        `;
+    }
+    container.innerHTML = html;
+}
 
-    // ========== FUNCTION TO SHOW JOB DETAILS WITH REQUIREMENTS ==========
-    window.showJobDetails = function(jobId) {
-        const job = recruiterOpportunities.find(function(j) { return j.id === jobId; });
-        if (!job) return;
-        
-        let requirementsText = "";
-        for (let i = 0; i < job.requirements.length; i++) {
-            requirementsText = requirementsText + "\n✓ " + job.requirements[i];
+function getApplicantCount(jobId) {
+    let count = 0;
+    for (let i = 0; i < applications.length; i++) {
+        if (applications[i].jobId === jobId) {
+            count++;
         }
-        
-        alert(
-            "📋 " + job.title + "\n\n" +
-            "📍 Location: " + job.location + "\n" +
-            "💰 Stipend: " + job.stipend + "\n" +
-            "📅 Duration: " + job.duration + "\n" +
-            "👥 Current Applicants: " + job.applicants + "\n\n" +
-            "REQUIREMENTS:" + requirementsText + "\n\n" +
-            "(Full details page coming in Sprint 2)"
-        );
-    };
+    }
+    return count;
+}
 
-    // ========== FUNCTION TO SHOW APPLICATIONS ==========
-    function renderApplications() {
-        const tbody = document.getElementById('applicationsTableBody');
-        if (!tbody) return;
-        
-        let filteredApps = [];
-        
-        if (currentFilter === 'all') {
-            filteredApps = allApplications;
-        } else if (currentFilter === 'pending') {
-            filteredApps = [];
-            for (let i = 0; i < allApplications.length; i++) {
-                if (allApplications[i].status === 'pending') {
-                    filteredApps.push(allApplications[i]);
-                }
-            }
-        } else if (currentFilter === 'reviewed') {
-            filteredApps = [];
-            for (let i = 0; i < allApplications.length; i++) {
-                if (allApplications[i].status === 'reviewed') {
-                    filteredApps.push(allApplications[i]);
-                }
-            }
-        }
-        
-        if (filteredApps.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">No applications found</td></tr>';
-            return;
-        }
-        
-        let html = '';
-        for (let i = 0; i < filteredApps.length; i++) {
-            const app = filteredApps[i];
-            html += `
+function renderApplications() {
+    const container = document.getElementById('applicationsList');
+    if (!container) return;
+    
+    if (applications.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <p>📭 No applications yet.</p>
+                <p>When students apply to your opportunities, they will appear here.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = `
+        <table>
+            <thead>
                 <tr>
-                    <td>${app.applicantName}</td>
-                    <td>${app.opportunityTitle}</td>
-                    <td>${app.appliedDate}</td>
-                    <td>${app.qualifications}</td>
-                    <td><span class="status-pending">${app.status}</span></td>
-                    <td class="action-buttons">
-                        <button onclick="viewApplicantProfile(${app.id})">👤 View Profile</button>
-                        <button onclick="alert('Shortlist coming in Sprint 2')">✓ Shortlist</button>
-                        <button onclick="alert('Reject coming in Sprint 2')">✗ Reject</button>
-                    </td>
+                    <th>Applicant Name</th>
+                    <th>Opportunity</th>
+                    <th>Applied Date</th>
+                    <th>Qualifications</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
-            `;
-        }
-        tbody.innerHTML = html;
+            </thead>
+            <tbody>
+    `;
+    
+    for (let i = 0; i < applications.length; i++) {
+        const app = applications[i];
+        const job = jobs.find(j => j.id === app.jobId);
+        const jobTitle = job ? job.title : 'Unknown';
+        
+        html += `
+            <tr>
+                <td>${escapeHtml(app.applicantName)}</td>
+                <td>${escapeHtml(jobTitle)}</td>
+                <td>${app.appliedDate}</td>
+                <td>${escapeHtml(app.qualifications)}</td>
+                <td><span class="status-pending">${app.status}</span></td>
+                <td class="action-buttons">
+                    <button onclick="viewApplicant(${app.id})">👤 View Profile</button>
+                    <button onclick="shortlistApplicant(${app.id})">✓ Shortlist</button>
+                    <button onclick="rejectApplicant(${app.id})">✗ Reject</button>
+                </td>
+            </tr>
+        `;
     }
+    
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+}
 
-    // ========== VIEW APPLICANT PROFILE ==========
-    window.viewApplicantProfile = function(applicationId) {
-        let applicant = null;
-        for (let i = 0; i < allApplications.length; i++) {
-            if (allApplications[i].id === applicationId) {
-                applicant = allApplications[i];
-                break;
-            }
-        }
-        
-        if (!applicant) return;
-        
-        alert(
-            "👤 APPLICANT PROFILE\n\n" +
-            "Name: " + applicant.applicantName + "\n" +
-            "Applied for: " + applicant.opportunityTitle + "\n" +
-            "Applied on: " + applicant.appliedDate + "\n" +
-            "Qualifications: " + applicant.qualifications + "\n" +
-            "Status: " + applicant.status + "\n\n" +
-            "(Full profile page coming in Sprint 2)"
-        );
-    };
-
-    // ========== FUNCTION TO SHOW NOTIFICATIONS ==========
-    function renderNotifications() {
-        const container = document.getElementById('notificationsList');
-        if (!container) return;
-        
-        if (notifications.length === 0) {
-            container.innerHTML = '<div class="notification-item">No notifications</div>';
-            return;
-        }
-        
-        let html = '';
-        for (let i = 0; i < notifications.length; i++) {
-            const notif = notifications[i];
-            const unreadClass = notif.read ? '' : 'unread';
-            html += `
-                <div class="notification-item ${unreadClass}">
-                    <div class="notification-content">
-                        <div class="notification-title">${notif.title}</div>
-                        <div class="notification-message">${notif.message}</div>
-                        <div class="notification-time">${notif.time}</div>
-                    </div>
-                    ${!notif.read ? '<button class="notification-read-btn" onclick="markAsRead(' + notif.id + ')">Mark read</button>' : ''}
+function renderNotifications() {
+    const container = document.getElementById('notificationsList');
+    if (!container) return;
+    
+    if (notifications.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <p>🔔 No new notifications.</p>
+                <p>When students apply or update their applications, you will see them here.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    for (let i = 0; i < notifications.length; i++) {
+        const notif = notifications[i];
+        const unreadClass = notif.read ? '' : 'unread';
+        html += `
+            <div class="notification-item ${unreadClass}">
+                <div class="notification-content">
+                    <div class="notification-title">${escapeHtml(notif.title)}</div>
+                    <div class="notification-message">${escapeHtml(notif.message)}</div>
+                    <div class="notification-time">${escapeHtml(notif.time)}</div>
                 </div>
-            `;
-        }
-        container.innerHTML = html;
+                ${!notif.read ? `<button class="notification-read-btn" onclick="markNotificationRead(${notif.id})">Mark read</button>` : ''}
+            </div>
+        `;
     }
+    container.innerHTML = html;
+}
 
-    // ========== FUNCTION TO SWITCH TABS ==========
-    function switchTab(tabName) {
-        // Hide all tab contents
-        const allContents = document.querySelectorAll('.tab-content');
-        for (let i = 0; i < allContents.length; i++) {
-            allContents[i].classList.remove('active');
-        }
-        
-        // Remove active class from all buttons
-        const allBtns = document.querySelectorAll('.nav-btn');
-        for (let i = 0; i < allBtns.length; i++) {
-            allBtns[i].classList.remove('active');
-        }
-        
-        // Show selected tab content
-        const selectedContent = document.getElementById(tabName + 'Content');
-        if (selectedContent) {
-            selectedContent.classList.add('active');
-        }
-        
-        // Add active class to clicked button
-        const clickedBtn = document.getElementById(tabName + 'Btn');
-        if (clickedBtn) {
-            clickedBtn.classList.add('active');
-        }
-    }
-
-    // ========== SETUP FILTER BUTTONS ==========
-    function setupFilters() {
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        for (let i = 0; i < filterBtns.length; i++) {
-            const btn = filterBtns[i];
-            btn.addEventListener('click', function() {
-                // Remove active class from all filter buttons
-                for (let j = 0; j < filterBtns.length; j++) {
-                    filterBtns[j].classList.remove('active');
-                }
-                // Add active class to clicked button
-                this.classList.add('active');
-                // Update filter and refresh applications
-                currentFilter = this.getAttribute('data-filter');
-                renderApplications();
-            });
-        }
-    }
-
-    // ========== MARK NOTIFICATION AS READ ==========
-    window.markAsRead = function(notificationId) {
-        for (let i = 0; i < notifications.length; i++) {
-            if (notifications[i].id === notificationId) {
-                notifications[i].read = true;
-                break;
-            }
-        }
+// ========== TAB SWITCHING ==========
+function switchTab(tab) {
+    const opportunitiesSection = document.getElementById('opportunitiesSection');
+    const applicationsSection = document.getElementById('applicationsSection');
+    const notificationsSection = document.getElementById('notificationsSection');
+    
+    const opportunitiesBtn = document.getElementById('opportunitiesBtn');
+    const applicationsBtn = document.getElementById('applicationsBtn');
+    const notificationsBtn = document.getElementById('notificationsBtn');
+    
+    if (tab === 'opportunities') {
+        opportunitiesSection.style.display = 'block';
+        applicationsSection.style.display = 'none';
+        notificationsSection.style.display = 'none';
+        opportunitiesBtn.classList.add('active');
+        applicationsBtn.classList.remove('active');
+        notificationsBtn.classList.remove('active');
+        renderOpportunities();
+    } else if (tab === 'applications') {
+        opportunitiesSection.style.display = 'none';
+        applicationsSection.style.display = 'block';
+        notificationsSection.style.display = 'none';
+        opportunitiesBtn.classList.remove('active');
+        applicationsBtn.classList.add('active');
+        notificationsBtn.classList.remove('active');
+        renderApplications();
+    } else if (tab === 'notifications') {
+        opportunitiesSection.style.display = 'none';
+        applicationsSection.style.display = 'none';
+        notificationsSection.style.display = 'block';
+        opportunitiesBtn.classList.remove('active');
+        applicationsBtn.classList.remove('active');
+        notificationsBtn.classList.add('active');
         renderNotifications();
-    };
+    }
+}
 
-    // ========== POST NEW JOB (WITH REQUIREMENTS FORM) ==========
-    window.showPostJobForm = function() {
-        alert(
-            "📝 POST NEW OPPORTUNITY (Sprint 2)\n\n" +
-            "Fields will include:\n" +
-            "- Job Title\n" +
-            "- Description\n" +
-            "- Location\n" +
-            "- Stipend amount\n" +
-            "- Duration\n" +
-            "- Requirements (list)\n" +
-            "- Closing date\n\n" +
-            "This form will be available in Sprint 2."
-        );
-    };
+// ========== POST JOB MODAL ==========
+function openPostJobModal() {
+    const modal = document.getElementById('postJobModal');
+    modal.style.display = 'flex';
+}
 
-    // ========== SETUP BUTTON CLICKS ==========
+function closePostJobModal() {
+    const modal = document.getElementById('postJobModal');
+    modal.style.display = 'none';
+    document.getElementById('postJobForm').reset();
+}
+
+function postJob(event) {
+    event.preventDefault();
+    
+    const title = document.getElementById('jobTitle').value;
+    const location = document.getElementById('jobLocation').value;
+    const stipend = document.getElementById('jobStipend').value;
+    const duration = document.getElementById('jobDuration').value;
+    const closingDate = document.getElementById('jobClosingDate').value;
+    const requirementsText = document.getElementById('jobRequirements').value;
+    const description = document.getElementById('jobDescription').value;
+    
+    // Convert requirements text to array
+    const requirements = requirementsText.split('\n').filter(line => line.trim() !== '');
+    
+    const newJob = {
+        id: Date.now(),
+        title: title,
+        location: location,
+        stipend: stipend,
+        duration: duration,
+        closingDate: closingDate,
+        requirements: requirements,
+        description: description,
+        postedDate: new Date().toISOString().split('T')[0]
+    };
+    
+    jobs.push(newJob);
+    
+    // Add notification
+    notifications.unshift({
+        id: Date.now(),
+        title: "Opportunity Posted",
+        message: `You posted "${title}" successfully`,
+        time: "Just now",
+        read: false
+    });
+    
+    closePostJobModal();
+    switchTab('opportunities');
+    alert('✅ Opportunity posted successfully!');
+}
+
+// ========== DELETE JOB ==========
+function deleteJob(jobId) {
+    const confirmDelete = confirm('Are you sure you want to delete this opportunity?');
+    
+    if (confirmDelete) {
+        const job = jobs.find(j => j.id === jobId);
+        const jobTitle = job ? job.title : 'Unknown';
+        
+        // Remove the job
+        jobs = jobs.filter(j => j.id !== jobId);
+        
+        // Also delete all applications for this job
+        applications = applications.filter(app => app.jobId !== jobId);
+        
+        // Add notification
+        notifications.unshift({
+            id: Date.now(),
+            title: "Opportunity Deleted",
+            message: `You deleted "${jobTitle}"`,
+            time: "Just now",
+            read: false
+        });
+        
+        renderOpportunities();
+        renderApplications();
+        
+        alert(`✅ "${jobTitle}" has been deleted.`);
+    }
+}
+
+// ========== VIEW FUNCTIONS ==========
+function viewJobDetails(jobId) {
+    const job = jobs.find(j => j.id === jobId);
+    if (!job) return;
+    
+    let requirementsText = '';
+    for (let i = 0; i < job.requirements.length; i++) {
+        requirementsText += `\n✓ ${job.requirements[i]}`;
+    }
+    
+    alert(
+        `📋 ${job.title}\n\n` +
+        `📍 Location: ${job.location}\n` +
+        `💰 Stipend: ${job.stipend}\n` +
+        `📅 Duration: ${job.duration}\n` +
+        `📆 Closing Date: ${job.closingDate}\n` +
+        `👥 Current Applicants: ${getApplicantCount(job.id)}\n\n` +
+        `REQUIREMENTS:${requirementsText}\n\n` +
+        `📝 Description:\n${job.description || 'No description provided'}`
+    );
+}
+
+function viewApplicant(applicationId) {
+    const app = applications.find(a => a.id === applicationId);
+    if (!app) return;
+    
+    const job = jobs.find(j => j.id === app.jobId);
+    const jobTitle = job ? job.title : 'Unknown';
+    
+    alert(
+        `👤 APPLICANT PROFILE\n\n` +
+        `Name: ${app.applicantName}\n` +
+        `Applied for: ${jobTitle}\n` +
+        `Applied on: ${app.appliedDate}\n` +
+        `Qualifications: ${app.qualifications}\n` +
+        `Status: ${app.status}\n\n` +
+        `(Full profile with CV will be available in Sprint 3)`
+    );
+}
+
+function shortlistApplicant(applicationId) {
+    const app = applications.find(a => a.id === applicationId);
+    if (app) {
+        app.status = 'shortlisted';
+        renderApplications();
+        
+        notifications.unshift({
+            id: Date.now(),
+            title: "Applicant Shortlisted",
+            message: `You shortlisted ${app.applicantName}`,
+            time: "Just now",
+            read: false
+        });
+        
+        alert(`✅ ${app.applicantName} has been shortlisted!`);
+    }
+}
+
+function rejectApplicant(applicationId) {
+    const app = applications.find(a => a.id === applicationId);
+    if (app) {
+        app.status = 'rejected';
+        renderApplications();
+        
+        notifications.unshift({
+            id: Date.now(),
+            title: "Applicant Rejected",
+            message: `You rejected ${app.applicantName}`,
+            time: "Just now",
+            read: false
+        });
+        
+        alert(`❌ ${app.applicantName} has been rejected.`);
+    }
+}
+
+function markNotificationRead(notificationId) {
+    const notif = notifications.find(n => n.id === notificationId);
+    if (notif) {
+        notif.read = true;
+        renderNotifications();
+    }
+}
+
+function markAllNotificationsRead() {
+    for (let i = 0; i < notifications.length; i++) {
+        notifications[i].read = true;
+    }
+    renderNotifications();
+    alert('All notifications marked as read');
+}
+
+function logout() {
+    alert('Logged out successfully!');
+}
+
+// ========== HELPER FUNCTION ==========
+function escapeHtml(text) {
+    if (!text) return '';
+    return text.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+// ========== EVENT LISTENERS ==========
+document.addEventListener('DOMContentLoaded', function() {
     // Tab buttons
-    const oppBtn = document.getElementById('opportunitiesBtn');
-    const appsBtn = document.getElementById('applicationsBtn');
-    const notifBtn = document.getElementById('notificationsBtn');
+    document.getElementById('opportunitiesBtn').addEventListener('click', function() { switchTab('opportunities'); });
+    document.getElementById('applicationsBtn').addEventListener('click', function() { switchTab('applications'); });
+    document.getElementById('notificationsBtn').addEventListener('click', function() { switchTab('notifications'); });
     
-    if (oppBtn) {
-        oppBtn.addEventListener('click', function() { switchTab('opportunities'); });
-    }
-    if (appsBtn) {
-        appsBtn.addEventListener('click', function() { switchTab('applications'); });
-    }
-    if (notifBtn) {
-        notifBtn.addEventListener('click', function() { switchTab('notifications'); });
-    }
+    // Post job button
+    document.getElementById('postJobBtn').addEventListener('click', openPostJobModal);
     
-    // Post opportunity button
-    const postBtn = document.getElementById('postOpportunityBtn');
-    if (postBtn) {
-        postBtn.addEventListener('click', function() {
-            showPostJobForm();
-        });
-    }
+    // Modal close buttons
+    document.getElementById('closeModalBtn').addEventListener('click', closePostJobModal);
+    document.getElementById('cancelModalBtn').addEventListener('click', closePostJobModal);
     
-    // Mark all as read button
-    const markAllBtn = document.getElementById('markAllReadBtn');
-    if (markAllBtn) {
-        markAllBtn.addEventListener('click', function() {
-            for (let i = 0; i < notifications.length; i++) {
-                notifications[i].read = true;
-            }
-            renderNotifications();
-            alert('All notifications marked as read');
-        });
-    }
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('postJobModal');
+        if (event.target === modal) {
+            closePostJobModal();
+        }
+    });
+    
+    // Post job form submit
+    document.getElementById('postJobForm').addEventListener('submit', postJob);
+    
+    // Mark all read button
+    document.getElementById('markAllReadBtn').addEventListener('click', markAllNotificationsRead);
     
     // Logout button
-    const logout = document.getElementById('logoutBtn');
-    if (logout) {
-        logout.addEventListener('click', function() {
-            alert('Logout will redirect to login page in Sprint 2');
-        });
-    }
-
-    // ========== INITIAL LOAD ==========
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+    
+    // Filter buttons
+    document.getElementById('filterAll').addEventListener('click', function() { alert('Filter All - coming in Sprint 2'); });
+    document.getElementById('filterPending').addEventListener('click', function() { alert('Filter Pending - coming in Sprint 2'); });
+    document.getElementById('filterReviewed').addEventListener('click', function() { alert('Filter Reviewed - coming in Sprint 2'); });
+    
+    // Show initial tab
     renderOpportunities();
-    renderApplications();
-    renderNotifications();
-    setupFilters();
-
 });
