@@ -1,0 +1,352 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: white;
+    color: blue;
+}
+
+.navbar {
+    background-color: blue;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+}
+
+.nav-links {
+    display: flex;
+    gap: 0.5rem;
+    list-style: none;
+    flex-wrap: wrap;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 8px;
+}
+
+.nav-btn:hover {
+    background-color: darkblue;
+}
+
+.nav-btn.active {
+    background-color: white;
+    color: blue;
+    font-weight: bold;
+}
+
+.user-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+}
+
+.logout-btn {
+    background: none;
+    border: 1px solid white;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: white;
+    color: blue;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.welcome {
+    background-color: blue;
+    color: white;
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.welcome h1, .welcome p {
+    color: white;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.section-header h2 {
+    color: blue;
+}
+
+.btn-primary {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background-color: darkblue;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-btn {
+    background: white;
+    border: 1px solid blue;
+    color: blue;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.filter-btn.active {
+    background-color: blue;
+    color: white;
+}
+
+.filter-btn:hover {
+    background-color: lightblue;
+}
+
+.opportunities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.opportunity-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid lightblue;
+    border-left: 4px solid blue;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.opportunity-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px lightblue;
+}
+
+.opportunity-card h3 {
+    color: blue;
+    margin-bottom: 0.5rem;
+}
+
+.opportunity-meta {
+    color: blue;
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+}
+
+.applicant-count {
+    display: inline-block;
+    background-color: lightblue;
+    color: blue;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+
+.location-info {
+    color: blue;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+.stipend-info {
+    color: blue;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-top: 0.25rem;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+}
+
+.status-active {
+    background-color: lightblue;
+    color: blue;
+}
+
+.status-closing {
+    background-color: lightblue;
+    color: blue;
+}
+
+.applications-table {
+    background: white;
+    border-radius: 12px;
+    overflow-x: auto;
+    border: 1px solid lightblue;
+}
+
+.applications-table table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+.applications-table th,
+.applications-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid lightblue;
+}
+
+.applications-table th {
+    background-color: lightblue;
+    color: blue;
+}
+
+.status-pending {
+    background-color: lightblue;
+    color: blue;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    display: inline-block;
+}
+
+.status-reviewed {
+    background-color: lightblue;
+    color: blue;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    display: inline-block;
+}
+
+.action-buttons button {
+    background: none;
+    border: 1px solid blue;
+    padding: 0.25rem 0.5rem;
+    margin: 0 0.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    color: blue;
+    font-size: 0.75rem;
+}
+
+.action-buttons button:hover {
+    background-color: lightblue;
+}
+
+.notifications-list {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid lightblue;
+    overflow: hidden;
+}
+
+.notification-item {
+    padding: 1rem;
+    border-bottom: 1px solid lightblue;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item.unread {
+    background-color: #f0f8ff;
+    border-left: 4px solid blue;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    color: blue;
+    font-weight: bold;
+}
+
+.notification-message {
+    color: blue;
+    font-size: 0.9rem;
+}
+
+.notification-time {
+    color: lightblue;
+    font-size: 0.8rem;
+}
+
+.notification-read-btn {
+    background: none;
+    border: 1px solid blue;
+    color: blue;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.notification-read-btn:hover {
+    background-color: lightblue;
+}
+
+footer {
+    text-align: center;
+    padding: 2rem;
+    color: blue;
+    margin-top: 2rem;
+    border-top: 1px solid lightblue;
+}
