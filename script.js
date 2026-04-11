@@ -1,4 +1,5 @@
 // ========== DATA STORAGE ==========
+//javascript for sprint1
 let jobs = [];
 let applications = [];
 let notifications = [];
