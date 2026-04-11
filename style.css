@@ -1,20 +1,48 @@
-/* my css  file for sprint1*/
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* Light Theme (Default) */
+:root {
+    --bg-color: white;
+    --text-color: rgb(77, 77, 141);
+    --card-bg: white;
+    --border-color: lightblue;
+    --navbar-bg: rgb(77, 77, 141);
+    --navbar-text: white;
+    --hover-bg: rgba(255, 255, 255, 0.2);
+    --welcome-bg: rgb(77, 77, 141);
+    --empty-state-bg: white;
+    --sidebar-bg: white;
+    --modal-bg: white;
+}
+
+[data-theme="dark"] {
+    --bg-color: #1a1a2e;
+    --text-color: #e0e0e0;
+    --card-bg: #16213e;
+    --border-color: #2c3e66;
+    --navbar-bg: #0f3460;
+    --navbar-text: #e0e0e0;
+    --hover-bg: rgba(255, 255, 255, 0.1);
+    --welcome-bg: #0f3460;
+    --empty-state-bg: #16213e;
+    --sidebar-bg: #16213e;
+    --modal-bg: #16213e;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: white;
-    color: rgb(77, 77, 141);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .navbar {
-    background-color: rgb(77, 77, 141);
-    color: white;
+    background-color: var(--navbar-bg);
+    color: var(--navbar-text);
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
@@ -26,10 +54,9 @@ body {
 .logo {
     font-size: 1.5rem;
     font-weight: bold;
-    color: white;
+    color: var(--navbar-text);
 }
 
-/* Search Bar */
 .search-bar {
     display: flex;
     align-items: center;
@@ -47,7 +74,7 @@ body {
 .search-bar input {
     background: none;
     border: none;
-    color: white;
+    color: var(--navbar-text);
     padding: 0.25rem;
     width: 100%;
     font-size: 0.9rem;
@@ -61,6 +88,32 @@ body {
     outline: none;
 }
 
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.theme-toggle {
+    background: none;
+    border: 1px solid white;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
 .nav-links {
     display: flex;
     gap: 0.5rem;
@@ -71,7 +124,7 @@ body {
 .nav-btn {
     background: none;
     border: none;
-    color: white;
+    color: var(--navbar-text);
     padding: 0.5rem 1rem;
     cursor: pointer;
     font-size: 1rem;
@@ -79,7 +132,7 @@ body {
 }
 
 .nav-btn:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--hover-bg);
 }
 
 .nav-btn.active {
@@ -95,7 +148,7 @@ body {
 }
 
 .welcome {
-    background-color: rgb(77, 77, 141);
+    background-color: var(--welcome-bg);
     color: white;
     padding: 1.5rem 2rem;
     border-radius: 12px;
@@ -117,7 +170,43 @@ body {
 }
 
 .section-header h2 {
-    color: rgb(77, 77, 141);
+    color: var(--text-color);
+}
+
+.header-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.sort-buttons {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    background: var(--card-bg);
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.sort-buttons label {
+    font-size: 0.8rem;
+}
+
+.sort-btn {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    font-size: 0.75rem;
+    border-radius: 4px;
+}
+
+.sort-btn.active {
+    background-color: rgb(77, 77, 141);
+    color: white;
 }
 
 .btn-primary {
@@ -136,7 +225,7 @@ body {
 }
 
 .btn-secondary {
-    background-color: white;
+    background-color: transparent;
     color: rgb(77, 77, 141);
     border: 1px solid rgb(77, 77, 141);
     padding: 0.75rem 1.5rem;
@@ -150,15 +239,28 @@ body {
     background-color: lightblue;
 }
 
+.btn-danger {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background-color: darkred;
+}
+
 .filter-buttons {
     display: flex;
     gap: 0.5rem;
 }
 
 .filter-btn {
-    background: white;
+    background: var(--card-bg);
     border: 1px solid rgb(77, 77, 141);
-    color: rgb(77, 77, 141);
+    color: var(--text-color);
     padding: 0.5rem 1rem;
     border-radius: 8px;
     cursor: pointer;
@@ -169,10 +271,6 @@ body {
     color: white;
 }
 
-.filter-btn:hover {
-    background-color: lightblue;
-}
-
 .opportunities-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -181,32 +279,95 @@ body {
 }
 
 .opportunity-card {
-    background: white;
+    background: var(--card-bg);
     border-radius: 12px;
     padding: 1.5rem;
-    border: 1px solid lightblue;
+    border: 1px solid var(--border-color);
     border-left: 4px solid rgb(77, 77, 141);
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
+.opportunity-card.draft {
+    border-left: 4px solid orange;
+    opacity: 0.8;
+}
+
+.opportunity-card.closed {
+    border-left: 4px solid gray;
+    opacity: 0.7;
+}
+
 .opportunity-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px lightblue;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .opportunity-card h3 {
-    color: rgb(77, 77, 141);
+    color: var(--text-color);
     margin-bottom: 0.5rem;
 }
 
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.card-header h3 {
+    margin-bottom: 0;
+    font-size: 1rem;
+}
+
+.card-checkbox {
+    margin-right: 0.5rem;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
 .opportunity-meta {
-    color: rgb(77, 77, 141);
-    font-size: 0.85rem;
-    margin: 0.5rem 0;
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     align-items: center;
+    margin: 0.5rem 0;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+}
+
+.status-badge.active {
+    background-color: lightgreen;
+    color: green;
+}
+
+.status-badge.draft {
+    background-color: orange;
+    color: white;
+}
+
+.status-badge.closed {
+    background-color: gray;
+    color: white;
+}
+
+.status-toggle {
+    background: none;
+    border: 1px solid gray;
+    color: gray;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.7rem;
+    margin-left: 0.5rem;
+}
+
+.status-toggle:hover {
+    background-color: lightgray;
 }
 
 .applicant-count {
@@ -219,39 +380,99 @@ body {
     font-weight: bold;
 }
 
-.location-info {
-    color: rgb(77, 77, 141);
+.location-info, .stipend-info, .closing-date {
     font-size: 0.85rem;
-    margin-top: 0.5rem;
+    margin: 0.25rem 0;
+    color: var(--text-color);
 }
 
-.stipend-info {
-    color: rgb(77, 77, 141);
-    font-size: 0.85rem;
-    font-weight: bold;
-    margin-top: 0.25rem;
+.action-buttons-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
 }
 
-.closing-date {
-    color: rgb(77, 77, 141);
-    font-size: 0.8rem;
-    margin-top: 0.5rem;
-}
-
-.status-badge {
-    display: inline-block;
-    background-color: lightblue;
-    color: rgb(77, 77, 141);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
+.edit-job-btn, .delete-job-btn, .duplicate-job-btn {
+    background: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
     font-size: 0.7rem;
+    flex: 1;
 }
 
+.edit-job-btn {
+    border: 1px solid rgb(77, 77, 141);
+    color: rgb(77, 77, 141);
+}
+
+.edit-job-btn:hover {
+    background-color: lightblue;
+}
+
+.delete-job-btn {
+    border: 1px solid red;
+    color: red;
+}
+
+.delete-job-btn:hover {
+    background-color: red;
+    color: white;
+}
+
+.duplicate-job-btn {
+    border: 1px solid green;
+    color: green;
+}
+
+.duplicate-job-btn:hover {
+    background-color: green;
+    color: white;
+}
+
+/* Bulk Delete Bar */
+.bulk-delete-bar {
+    background-color: #fff3cd;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Pagination */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1rem;
+}
+
+.pagination-btn {
+    background-color: rgb(77, 77, 141);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.pagination-btn:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+}
+
+/* Applications Table */
 .applications-table {
-    background: white;
+    background: var(--card-bg);
     border-radius: 12px;
     overflow-x: auto;
-    border: 1px solid lightblue;
+    border: 1px solid var(--border-color);
     margin-top: 1rem;
 }
 
@@ -265,58 +486,26 @@ body {
 .applications-table td {
     padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid lightblue;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
 }
 
 .applications-table th {
-    background-color: lightblue;
-    color: rgb(77, 77, 141);
+    background-color: var(--sidebar-bg);
 }
 
-.status-pending {
-    background-color: lightblue;
-    color: rgb(77, 77, 141);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    display: inline-block;
-}
-
-.status-reviewed {
-    background-color: lightblue;
-    color: rgb(77, 77, 141);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    display: inline-block;
-}
-
-.action-buttons button {
-    background: none;
-    border: 1px solid rgb(77, 77, 141);
-    padding: 0.25rem 0.5rem;
-    margin: 0 0.2rem;
-    border-radius: 4px;
-    cursor: pointer;
-    color: rgb(77, 77, 141);
-    font-size: 0.75rem;
-}
-
-.action-buttons button:hover {
-    background-color: lightblue;
-}
-
+/* Notifications */
 .notifications-list {
-    background: white;
+    background: var(--card-bg);
     border-radius: 12px;
-    border: 1px solid lightblue;
+    border: 1px solid var(--border-color);
     overflow: hidden;
     margin-top: 1rem;
 }
 
 .notification-item {
     padding: 1rem;
-    border-bottom: 1px solid lightblue;
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -324,67 +513,26 @@ body {
     gap: 1rem;
 }
 
-.notification-item:last-child {
-    border-bottom: none;
-}
-
 .notification-item.unread {
     background-color: #f0f8ff;
     border-left: 4px solid rgb(77, 77, 141);
 }
 
-.notification-content {
-    flex: 1;
-}
-
-.notification-title {
-    color: rgb(77, 77, 141);
-    font-weight: bold;
-}
-
-.notification-message {
-    color: rgb(77, 77, 141);
-    font-size: 0.9rem;
-}
-
-.notification-time {
-    color: lightblue;
-    font-size: 0.8rem;
-}
-
-.notification-read-btn {
-    background: none;
-    border: 1px solid rgb(77, 77, 141);
-    color: rgb(77, 77, 141);
-    padding: 0.25rem 0.75rem;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.notification-read-btn:hover {
-    background-color: lightblue;
+[data-theme="dark"] .notification-item.unread {
+    background-color: #1a3a5c;
 }
 
 .empty-state {
-    background: white;
-    border: 1px solid lightblue;
+    background: var(--empty-state-bg);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 3rem 2rem;
     text-align: center;
-    color: rgb(77, 77, 141);
+    color: var(--text-color);
     margin-top: 1rem;
 }
 
-.empty-state p {
-    margin: 0.5rem 0;
-}
-
-.empty-state p:first-child {
-    font-weight: bold;
-    font-size: 1.1rem;
-}
-
-/* Modal Styles */
+/* Modal */
 .modal {
     display: none;
     position: fixed;
@@ -399,13 +547,21 @@ body {
 }
 
 .modal-content {
-    background-color: white;
+    background-color: var(--modal-bg);
     border-radius: 12px;
     width: 90%;
     max-width: 600px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.confirm-content {
+    max-width: 400px;
+}
+
+.confirm-body {
+    padding: 2rem;
+    text-align: center;
 }
 
 .modal-header {
@@ -413,21 +569,17 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem;
-    border-bottom: 1px solid lightblue;
+    border-bottom: 1px solid var(--border-color);
 }
 
-.modal-header h2 {
-    color: rgb(77, 77, 141);
+.modal-header h2, .modal-header h3 {
+    color: var(--text-color);
 }
 
 .close-modal {
     font-size: 1.8rem;
     cursor: pointer;
-    color: rgb(77, 77, 141);
-}
-
-.close-modal:hover {
-    color: rgb(55, 55, 110);
+    color: var(--text-color);
 }
 
 .form-group {
@@ -436,7 +588,7 @@ body {
 
 .form-group label {
     display: block;
-    color: rgb(77, 77, 141);
+    color: var(--text-color);
     font-weight: bold;
     margin-bottom: 0.5rem;
 }
@@ -446,18 +598,20 @@ body {
 .form-group select {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid lightblue;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     font-size: 1rem;
     font-family: inherit;
-    color: rgb(77, 77, 141);
+    background-color: var(--card-bg);
+    color: var(--text-color);
 }
 
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-    outline: none;
-    border-color: rgb(77, 77, 141);
+.char-counter {
+    display: block;
+    text-align: right;
+    margin-top: 0.25rem;
+    font-size: 0.7rem;
+    color: green;
 }
 
 .form-buttons {
@@ -465,57 +619,15 @@ body {
     justify-content: flex-end;
     gap: 1rem;
     padding: 1.5rem;
-    border-top: 1px solid lightblue;
+    border-top: 1px solid var(--border-color);
 }
 
 footer {
     text-align: center;
     padding: 2rem;
-    color: rgb(77, 77, 141);
+    color: var(--text-color);
     margin-top: 2rem;
-    border-top: 1px solid lightblue;
-}
-
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-}
-
-.card-header h3 {
-    margin-bottom: 0;
-}
-
-.delete-job-btn {
-    background: none;
-    border: 1px solid red;
-    color: red;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
-}
-
-.delete-job-btn:hover {
-    background-color: red;
-    color: white;
-}
-
-.view-details-btn {
-    background: none;
-    border: 1px solid rgb(77, 77, 141);
-    color: rgb(77, 77, 141);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    margin-top: 0.75rem;
-    width: 100%;
-}
-
-.view-details-btn:hover {
-    background-color: lightblue;
+    border-top: 1px solid var(--border-color);
 }
 
 /* Dropdown Menu */
@@ -531,11 +643,6 @@ footer {
     padding: 0.25rem 0.75rem;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 40px;
-    transition: background-color 0.3s;
-}
-
-.dropdown-trigger:hover {
-    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .avatar {
@@ -551,78 +658,22 @@ footer {
     font-size: 0.9rem;
 }
 
-.user-name {
-    font-weight: 500;
-    font-size: 0.85rem;
-}
-
-.dropdown-arrow {
-    font-size: 0.6rem;
-    transition: transform 0.3s;
-}
-
-.dropdown-trigger.active .dropdown-arrow {
-    transform: rotate(180deg);
-}
-
 .dropdown-menu {
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
     width: 280px;
-    background-color: white;
+    background-color: var(--modal-bg);
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     overflow: hidden;
     display: none;
     z-index: 1000;
-    border: 1px solid lightblue;
+    border: 1px solid var(--border-color);
 }
 
 .dropdown-menu.show {
     display: block;
-}
-
-.dropdown-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background-color: #f8f9fa;
-}
-
-.avatar-large {
-    width: 48px;
-    height: 48px;
-    background-color: rgb(77, 77, 141);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 1.2rem;
-}
-
-.dropdown-header-info {
-    flex: 1;
-}
-
-.dropdown-name {
-    font-weight: bold;
-    color: rgb(77, 77, 141);
-    margin-bottom: 0.25rem;
-}
-
-.dropdown-email {
-    font-size: 0.75rem;
-    color: #666;
-}
-
-.dropdown-divider {
-    height: 1px;
-    background-color: lightblue;
-    margin: 0.5rem 0;
 }
 
 .dropdown-item {
@@ -630,16 +681,10 @@ footer {
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 1rem;
-    color: rgb(77, 77, 141);
+    color: var(--text-color);
     text-decoration: none;
-    transition: background-color 0.2s;
 }
 
 .dropdown-item:hover {
-    background-color: #f0f8ff;
-}
-
-.dropdown-icon {
-    font-size: 1.1rem;
-    width: 24px;
+    background-color: var(--hover-bg);
 }
