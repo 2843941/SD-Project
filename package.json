@@ -1,0 +1,17 @@
+{
+  "name": "recruiter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "recruiter_homepage.js",
+  "scripts": {
+    "test": "jest --coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.3.0"
+  }
+}
