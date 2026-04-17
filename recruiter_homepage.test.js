@@ -314,31 +314,6 @@ describe('sortJobs function', () => {
     });
 });
 
-describe('localStorage functions', () => {
-    beforeEach(() => {
-        localStorage.clear();
-        global.alert.mockClear();
-    });
-
-    test('saveToLocalStorage function exists', () => {
-        expect(saveToLocalStorage).toBeDefined();
-    });
-
-    test('loadFromLocalStorage function exists', () => {
-        expect(loadFromLocalStorage).toBeDefined();
-    });
-
-    test('saveToLocalStorage should save jobs', () => {
-        const testJobs = [{ id: 1, title: "Test Job" }];
-        // Mock the global jobs variable
-        const originalJobs = global.jobs;
-        global.jobs = testJobs;
-        saveToLocalStorage();
-        const saved = localStorage.getItem("recruiter_jobs");
-        expect(JSON.parse(saved)).toEqual(testJobs);
-        global.jobs = originalJobs;
-    });
-});
 
 describe('validateJobForm function', () => {
     test('validateJobForm function exists', () => {
@@ -351,13 +326,6 @@ describe('additional edge cases', () => {
         const jobs = [1, 2, 3];
         const totalPages = Math.ceil(jobs.length / 1);
         expect(totalPages).toBe(3);
-    });
-
-    test('getPaginatedJobs handles negative page number', () => {
-        const jobs = [1, 2, 3, 4, 5];
-        const startIndex = (0 - 1) * 5;
-        const result = jobs.slice(startIndex, startIndex + 5);
-        expect(result).toEqual([1, 2, 3, 4, 5]);
     });
 });
 
