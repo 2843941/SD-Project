@@ -71,8 +71,6 @@ const {
     sortJobs,
     getApplicantCount,
     getPendingApplicantCount,
-    saveToLocalStorage,
-    loadFromLocalStorage,
     validateJobForm
 } = recruiterModule;
 
@@ -313,7 +311,6 @@ describe('sortJobs function', () => {
         expect(testSortJobs(singleJob)).toHaveLength(1);
     });
 });
-
 
 describe('validateJobForm function', () => {
     test('validateJobForm function exists', () => {
